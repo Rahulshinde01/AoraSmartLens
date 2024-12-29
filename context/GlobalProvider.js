@@ -30,8 +30,10 @@ const GlobalProvider = ({ children }) =>{
             setIsLoading(false)
         })
     }, [])
+
+    
     return(
-        // need to whap these GlobalContext.Provider in all pages
+        // need to wrap these GlobalContext.Provider in all pages
         <GlobalContext.Provider
         value={{
             isLoggedIn,
