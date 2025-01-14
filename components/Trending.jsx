@@ -36,7 +36,6 @@ const TrendingItem = ({activeItem, item}) => {
   }); 
 
 
-
   return (
     <Animatable.View
     className='mr-5'
@@ -46,7 +45,7 @@ const TrendingItem = ({activeItem, item}) => {
 
       {play ? (
 
-          <VideoView className='w-52 h-72 rounded-[35px] mt-3 bg-white/10' player={player} allowsFullscreen allowsPictureInPicture />
+          <VideoView className='w-52 h-72 rounded-[35px] mt-3 bg-white/10' player={player} allowsFullscreen allowsPictureInPicture nativeControls={true} />
 
       ) : (
         <TouchableOpacity 

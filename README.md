@@ -1,1 +1,1 @@
-# HiveVision---an-AI-generated-stock-video-sharing-platform
+# SmartLens - an-AI-generated-stock-video-sharing-platform

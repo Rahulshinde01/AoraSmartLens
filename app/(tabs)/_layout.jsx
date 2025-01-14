@@ -2,10 +2,12 @@ import { View, Text, Image } from 'react-native'
 import { Tabs, Redirect } from 'expo-router'
 import React from 'react'
 import { icons } from '../../constants';
+import { StatusBar } from 'expo-status-bar'
+
 
 const TabIcon = ({ icon, color, iconName, focused })=>{
   return (
-    <View className='items-center justify-center gap-2 w-20'>
+    <View className='items-center justify-center gap-2 w-20 mt-6'>
       <Image 
       source ={icon} 
       resizeMode ="contain"
@@ -53,7 +55,7 @@ const TabsLayout = () => {
       }}
       />
 
-      <Tabs.Screen 
+      {/* <Tabs.Screen 
       name='bookmark' 
       options={{
         title: 'Bookmark',
@@ -67,7 +69,7 @@ const TabsLayout = () => {
           />
         )
       }}
-      />
+      /> */}
 
       <Tabs.Screen 
       name='create' 
@@ -103,6 +105,11 @@ const TabsLayout = () => {
 
 
      </Tabs>
+
+     <StatusBar 
+         backgroundColor='#161622'
+         style='light'
+         />
     </>
   )
 }

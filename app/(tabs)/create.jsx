@@ -24,14 +24,35 @@ const Create = () => {
   })
 
 
-  const openPicker = async (selectType) =>{
-     // No permissions request is necessary for launching the image library
-     let result = await ImagePicker.launchImageLibraryAsync({
+  const videoPlayer = useVideoPlayer(form?.video?.uri || null, player => {
+    if (player) {
+      player.pause();
+      player.muted = true;
+    }
+  });
 
-      mediaTypes: ['images', 'videos'],   
+  const openPicker = async (selectType) =>{
+
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+      return;
+    }
+
+    let options = {
       aspect: [4, 3],
       quality: 1,
-    });
+      mediaTypes: selectType === 'video' 
+        ? ImagePicker.MediaTypeOptions.Videos  // Use MediaTypeOptions instead
+        : ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+    };
+
+
+
+    let result = await ImagePicker.launchImageLibraryAsync(options);
+
   
     if(!result.canceled){
       if(selectType === 'image'){
@@ -42,25 +63,35 @@ const Create = () => {
         setForm({...form, video: result.assets[0]})
       }
     }
+  
     
   }
   
   const submit = async () =>{
-    if(!form.prompt || !form.title || !form.thumbnail || !form.video){
+    if(
+      (form.prompt === "") |
+      (form.title === "") |
+      !form.thumbnail |
+      !form.video
+    ){
       return Alert.alert('Please fill in all the fields')
     }
   
     setUploading(true);
   
     try {
+      
       await createVideo({
-        ...form, userId: user.$id
+        ...form, userId: user.$id,
       });
+
+      console.log("passed")
   
       Alert.alert('Success', 'Post uploaded successfully')
       router.push('/home');
   
     } catch (error) {
+      console.log("failed")
       Alert.alert('Error', error.message)
     }finally {
       setForm({
@@ -73,11 +104,6 @@ const Create = () => {
       setUploading(false);
     }
   }
-
-
-   // Only initialize video player if form.video exists
-   const player = form.video ? useVideoPlayer(form.video.uri, player => {
-  }) : null;
 
 
 
@@ -103,16 +129,14 @@ const Create = () => {
 
           <TouchableOpacity onPress={() => openPicker('video')}>
             {form.video ? (
-              <VideoView className='w-full h-64 rounded-2xl' player={player} allowsFullscreen allowsPictureInPicture />
-
-              // <Video
-              // source ={{ uri : form.video.uri}}
-              // className='w-full h-64 rounded-2xl'
-              // useNativeControls
-              // resizeMode={ResizeMode.COVER}
-              // isLooping
-              //  />
-            ) : (
+              <VideoView 
+                className='w-full h-64 rounded-2xl'
+                player={videoPlayer}
+                allowsFullscreen
+                allowsPictureInPicture
+                nativeControls={true}
+          />
+        ) : (
               <View className='w-full h-40 px-4 bg-black-100 rounded-2xl justify-center items-center'>
                 <View className='w-14 h-14 border border-dashed border-secondary-100 justify-center items-center'>
 
@@ -137,8 +161,9 @@ const Create = () => {
             {form.thumbnail ? (
               <Image
               source ={{ uri : form.thumbnail.uri}}
-              className='w-full h-64 rounded-2xl'
               resizeMode='cover'
+              className='w-full h-64 rounded-2xl'
+              
                />
             ) : (
               <View className='w-full h-16 px-4 bg-black-100 rounded-2xl justify-center items-center border-2 border-black-200 flex-row space-x-2'>
