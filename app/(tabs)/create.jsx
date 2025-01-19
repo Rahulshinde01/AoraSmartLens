@@ -85,13 +85,11 @@ const Create = () => {
         ...form, userId: user.$id,
       });
 
-      console.log("passed")
   
       Alert.alert('Success', 'Post uploaded successfully')
       router.push('/home');
   
     } catch (error) {
-      console.log("failed")
       Alert.alert('Error', error.message)
     }finally {
       setForm({
